@@ -8,6 +8,7 @@ function App() {
   const [cards, setCards] = useState<CardInfo[]>([]);
   const [xValue, setXValue] = useState<number>(4);
   const [simulationInfo, setSimulationInfo] = useState<SimulationInfo | undefined>();
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
   function cardTypeEditor(card: CardInfo, index: number) {
     return <div key={`card_${index}`}>
@@ -43,21 +44,25 @@ function App() {
       <br/>
       Flip <input type="number" value={xValue} onChange={(ev) => setXValue(+ev.target.value)}/> cards
       <br/>
-      <button onClick={runSimulation}>Run simulation</button>
+      <button disabled={isRunning} onClick={runSimulation}>Run simulation</button>
     </div>
   }
 
   function runSimulation(){
-    let hitRate = 0;
-    for (let i=0; i<SIMULATION_RUN_COUNT; i++) {
-      const wasHit = shuffleAndFlipX(cards, xValue);
-      if (wasHit) hitRate++;
-    }
+    setIsRunning(true);
+    setTimeout(() => {
+      let hitRate = 0;
+      for (let i=0; i<SIMULATION_RUN_COUNT; i++) {
+        const wasHit = shuffleAndFlipX(cards, xValue);
+        if (wasHit) hitRate++;
+      }
 
-    setSimulationInfo({
-      runCount: SIMULATION_RUN_COUNT,
-      hitRate,
-    });
+      setSimulationInfo({
+        runCount: SIMULATION_RUN_COUNT,
+        hitRate,
+      });
+      setIsRunning(false);
+    }, 0);
   }
 
   return (
